@@ -33,9 +33,20 @@ class Page {
 	}
 
 	static handleRoute(req, res) {
-		const name = Page.templateNameFromRoute(req)
-		const page = new Page(name)
-		res.send(page.render())
+		try {
+			const name = Page.templateNameFromRoute(req)
+			const page = new Page(name)
+			res.send(page.render())
+		} catch (err) {
+			switch(err.errno) {
+				case -2:
+					res.status(404).send('NOT FOUND')
+					break
+				default:
+					res.status(500).send('INTERNAL SERVER ERROR')
+			}
+
+		}
 	}
 
 	static templateNameFromRoute(req) {
